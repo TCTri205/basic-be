@@ -6,6 +6,8 @@ app.use(express.json())
 
 // Đọc danh sách người dùng từ file src/users.json
 let user = []
+
+// Hàm loadUsers an toàn hơn với xử lý lỗi chi tiết
 const loadUsers = () => {
     try {
         const data = fs.readFileSync('src/users.json', 'utf-8')
@@ -21,13 +23,12 @@ loadUsers()
 
 // Hàm kiểm tra dữ liệu hợp lệ
 const validateUser = (userData) => {
-    if (!userData.id || !userData.name) {
-        return false
-    }
-    if (typeof userData.id !== 'number' || typeof userData.name !== 'string') {
-        return false
-    }
-    return true
+    return (
+        userData &&
+        typeof userData.id === 'number' &&
+        typeof userData.name === 'string' &&
+        userData.name.trim() !== ''
+    )
 }
 
 app.post('/user', (req, res) => {
@@ -38,11 +39,23 @@ app.post('/user', (req, res) => {
         return res.status(400).json({ error: 'Invalid data' })
     }
 
+    // Kiểm tra xem ID đã tồn tại hay chưa
+    if (user.find((u) => u.id === id)) {
+        return res
+            .status(400)
+            .json({ error: 'User with this ID already exists' })
+    }
+
     // Thêm người dùng vào danh sách
     user.push({ id, name })
 
     // Cập nhật vào file src/users.json
-    fs.writeFileSync('src/users.json', JSON.stringify(user, null, 2))
+    try {
+        fs.writeFileSync('src/users.json', JSON.stringify(user, null, 2))
+    } catch (err) {
+        console.error('Error writing to src/users.json:', err)
+        return res.status(500).json({ error: 'Failed to save data' })
+    }
 
     res.status(201).json(user)
 })
@@ -71,10 +84,21 @@ app.patch('/user/:id', (req, res) => {
         return res.status(404).json({ error: 'User not found' })
     }
 
+    // Kiểm tra xem có thay đổi tên hay không
+    if (!name || name.trim() === '') {
+        return res.status(400).json({ error: 'Invalid name' })
+    }
+
+    // Cập nhật tên
     tmp.name = name
 
     // Cập nhật vào file src/users.json
-    fs.writeFileSync('src/users.json', JSON.stringify(user, null, 2))
+    try {
+        fs.writeFileSync('src/users.json', JSON.stringify(user, null, 2))
+    } catch (err) {
+        console.error('Error writing to src/users.json:', err)
+        return res.status(500).json({ error: 'Failed to save data' })
+    }
 
     res.json(tmp)
 })
@@ -92,24 +116,16 @@ app.delete('/user/:id', (req, res) => {
     user.splice(userIndex, 1)
 
     // Cập nhật vào file src/users.json
-    fs.writeFileSync('src/users.json', JSON.stringify(user, null, 2))
+    try {
+        fs.writeFileSync('src/users.json', JSON.stringify(user, null, 2))
+    } catch (err) {
+        console.error('Error writing to src/users.json:', err)
+        return res.status(500).json({ error: 'Failed to save data' })
+    }
 
     res.json(user)
 })
 
-app.get(
-    '/hello',
-    (req, res, next) => {
-        if (req.body.name === 'tct') {
-            return next()
-        }
-        res.send('Hello world')
-    },
-    (req, res, next) => {
-        res.send('Hello' + req.body.name)
-    }
-)
-
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Server is running on port ${port}`)
 })
