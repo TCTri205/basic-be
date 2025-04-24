@@ -3,7 +3,7 @@ import 'dotenv/config'
 
 let dbInstance = null
 
-const client = new MongoClient(process.env.MONGODB_URL)
+const client = new MongoClient(process.env.MONGODB_URI)
 
 const connectDB = async () => {
     await client.connect()
