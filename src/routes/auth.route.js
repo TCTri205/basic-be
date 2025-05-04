@@ -8,6 +8,7 @@ import VerifyMiddleware from '../middleware/verify.middleware.js'
 
 const route = express.Router()
 
+// route.get('/oke').get()
 route
     .route('/register')
     .post(ValidateMiddleware.validateUser, AuthController.register)

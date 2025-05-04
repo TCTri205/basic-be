@@ -3,6 +3,9 @@ import ValidateMiddleware from '../middleware/validate.middleware.js'
 import UserController from '../controllers/user.controller.js'
 
 const route = Router()
+// route.get('/oke', (req, res, next) => {
+//     res.send('oke')
+// })
 
 route.route('/all').get(UserController.getAllUsers)
 

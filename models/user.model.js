@@ -75,6 +75,38 @@ class UserModel {
         }
         return user
     }
+
+    static async getUserByEmail(email) {
+        // try {
+        //     const user = await getDB()
+        //         .collection('users')
+        //         .findOne({ email, password })
+        //     return user
+        // } catch (error) {
+        //     throw new Error('Error fetching user: ' + error.message)
+        // }
+        const user = await getDB().collection('users').findOne({ email })
+        if (!user) {
+            throw new Error('Invalid credentials')
+        }
+        return user
+    }
+
+    static async getPassByEmail(email) {
+        try {
+            const user = await getDB()
+                .collection('users')
+                .findOne({ email }, { projection: { password: 1 } }) // Chỉ lấy trường password
+            if (!user) {
+                throw new Error('User not found')
+            }
+            return user.password // Trả về mật khẩu
+        } catch (error) {
+            throw new Error(
+                'Error fetching password by email: ' + error.message
+            )
+        }
+    }
 }
 
 export default UserModel

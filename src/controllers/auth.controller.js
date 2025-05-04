@@ -10,6 +10,8 @@ class AuthController {
             // if (!token) {
             //     return res.status(401).json({ message: 'Invalid credentials' })
             // }
+
+            console.log('Generated token:', token)
             return res.status(200).json({
                 success: 'true',
                 token: token,

@@ -8,6 +8,13 @@ const router = Router()
 
 router.use('/', homeRoute)
 router.use('/users', userRouter)
-router.use('/auth', authRoute) // Thêm route auth vào router chính
+router.use(
+    '/auth',
+    (req, res, next) => {
+        console.log('2')
+        next()
+    },
+    authRoute
+) // Thêm route auth vào router chính
 
 export default router
