@@ -29,7 +29,6 @@ const startApp = () => {
 const runApp = async () => {
     try {
         await connectDB()
-        console.log('1')
         console.log('Database connected successfully')
         startApp()
     } catch (error) {

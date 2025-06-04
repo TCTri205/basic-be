@@ -1,6 +1,7 @@
 import AuthProvider from '../providers/auth.provider.js'
 import UserModel from '../../models/user.model.js'
 import hashProvider from '../providers/hash.provider.js'
+import sendEmail from '../providers/email.provider.js'
 
 class AuthService {
     async login(email, password) {
@@ -66,6 +67,57 @@ class AuthService {
             return data
         } catch (error) {
             throw new Error('Error fetching user: ' + error.message)
+        }
+    }
+
+    async forgotPassword(email) {
+        try {
+            const user = await UserModel.getUserByEmail(email)
+            if (!user) {
+                throw new Error('User not found')
+            }
+
+            // Tạo token reset password
+            const rawToken = await hashProvider.generateRandomToken()
+            console.log('rawToken', rawToken)
+            // const token = await hashProvider.generateHash(rawToken)
+
+            // Gửi email reset password
+            // console.log('token', token)
+            await sendEmail({
+                from: email,
+                to: process.env.SMTP_USER,
+                subject: 'Forgot Password',
+                text: rawToken,
+            })
+            console.log('Email sent to:', process.env.SMTP_USER)
+
+            // Cập nhật token vào cơ sở dữ liệu
+            await UserModel.updateUserToken(email, rawToken)
+
+            return true
+        } catch (error) {
+            throw new Error('Error sending email: ' + error.message)
+        }
+    }
+    async resetPassword(email, token, newPassword) {
+        try {
+            // const user = await UserModel.getUserByEmailAndToken(email, token)
+            const user = await UserModel.getUserByEmail(email)
+            if (!user) {
+                throw new Error('User not found')
+            }
+            if (user.resetPasswordExpires < Date.now()) {
+                throw new Error('Token expired')
+            }
+            if (!user.resetPasswordToken || user.resetPasswordToken !== token) {
+                throw new Error('Invalid token')
+            }
+            const hashString = await hashProvider.generateHash(newPassword)
+            await UserModel.updatePassword(email, hashString)
+            return true
+        } catch (error) {
+            throw new Error('Error resetting password: ' + error.message)
         }
     }
 }

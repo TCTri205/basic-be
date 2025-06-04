@@ -11,6 +11,12 @@ class HashProvider {
         const isMatch = await bcrypt.compare(plainText, hashString)
         return isMatch
     }
+
+    async generateRandomToken() {
+        const randomBytes = await bcrypt.genSalt(16) // 16 bytes of random data
+        const token = randomBytes.toString('hex') // Convert to hex string
+        return token
+    }
 }
 
 export default new HashProvider()

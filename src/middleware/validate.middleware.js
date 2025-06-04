@@ -1,28 +1,3 @@
-// import Joi from 'joi'
-
-// class ValidateMiddleware {
-//     async validateId(req, res, next) {
-//         try {
-//             const schema = Joi.object({
-//                 id: Joi.string()
-//                     .regex(/^[0-9a-fA-F]{24}$/)
-//                     .required(), // Validate ObjectId của MongoDB
-//             })
-
-//             await schema.validateAsync(req.params, { abortEarly: false })
-//             next()
-//         } catch (err) {
-//             res.status(400).json({
-//                 success: false,
-//                 message: 'Invalid ID format',
-//                 details: err.details.map((detail) => detail.message), // Trả về chi tiết lỗi
-//             })
-//         }
-//     }
-// }
-
-// export default new ValidateMiddleware()
-
 import Joi from 'joi'
 
 class ValidateMiddleware {

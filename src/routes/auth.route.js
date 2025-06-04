@@ -19,4 +19,7 @@ route
 
 route.get('/getme', VerifyMiddleware.checkAuth, AuthController.getMe)
 
+route.post('/forgot-password', AuthController.forgotPassword)
+route.post('/reset-password', AuthController.resetPassword)
+
 export default route
