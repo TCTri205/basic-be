@@ -16,7 +16,7 @@ const startApp = () => {
     const port = 3000
 
     app.use(express.json())
-    app.use('/abc', express.static(path.join(__dirname, 'public')))
+    // app.use('/abc', express.static(path.join(__dirname, 'public')))
     app.use('/', router)
     templateEngineConfig(app)
     app.use(errorHandler)
@@ -29,6 +29,7 @@ const startApp = () => {
 const runApp = async () => {
     try {
         await connectDB()
+        console.log('1')
         console.log('Database connected successfully')
         startApp()
     } catch (error) {
