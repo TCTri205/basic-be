@@ -59,4 +59,3 @@ jobs:
             docker run -d -p 3000:3000 --env PORT=$PORT --env DATABASE_URL=$DATABASE_URL $REGISTRY/$REPOSITORY:$IMAGE_TAG
             docker container prune -f
             docker image prune -a -f
-            905418342382.dkr.ecr.ap-southeast-1.amazonaws.com
