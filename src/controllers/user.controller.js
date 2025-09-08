@@ -17,6 +17,7 @@ class UserController {
             const users = await UserService.getAllUsers()
             return res.status(200).json(users)
         } catch (error) {
+            console.error('Error in getAllUsers:', error)
             return res.status(500).json({ message: error.message })
         }
     }

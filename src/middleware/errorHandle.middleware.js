@@ -18,6 +18,7 @@ const errorHandler = (err, req, res, next) => {
         stack: err.stack,
     }
 
+    console.error('🔥 CATCHED BY errorHandler:', err)
     res.status(err.statusCode).json(resError)
 }
 

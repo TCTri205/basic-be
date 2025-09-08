@@ -16,7 +16,7 @@ const startApp = () => {
     const port = 3000
 
     app.use(express.json())
-    app.use('/abc', express.static(path.join(__dirname, 'public')))
+    // app.use('/abc', express.static(path.join(__dirname, 'public')))
     app.use('/', router)
     templateEngineConfig(app)
     app.use(errorHandler)
